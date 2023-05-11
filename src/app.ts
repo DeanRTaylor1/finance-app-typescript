@@ -14,6 +14,9 @@ export class App {
       this.setupDevLogging();
     }
     this.app.use("/api", this.setupApiRoutes());
+
+    //Must be last
+    this.setupNotFoundHandler();
   }
 
   public getExpressApp(): Express {
@@ -58,6 +61,12 @@ export class App {
         }
       )
     );
+  }
+
+  public setupNotFoundHandler() {
+    this.app.all("*", (req: Request, res: Response) => {
+      res.status(404).send("404 Page not found");
+    });
   }
 
   public start(port: string) {
