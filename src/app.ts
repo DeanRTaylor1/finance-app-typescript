@@ -2,6 +2,7 @@ import express, { Express, Request, Response, Router } from "express";
 import morgan from "morgan";
 import { formatMethod, formatStatus } from "./lib/util/log-format";
 import { colors } from "./lib/util/colors";
+import { v1Routes } from "./lib/routes/v1Routes";
 
 export class App {
   private app: Express;
@@ -22,21 +23,10 @@ export class App {
   private setupApiRoutes() {
     const apiRouter = Router();
 
-    apiRouter.use("/v1", this.v1Routes());
+    apiRouter.use("/v1", new v1Routes().getRouter());
     apiRouter.use("/v2", this.v2Routes());
 
     return apiRouter;
-  }
-
-  private v1Routes() {
-    const router = Router();
-
-    router.use("/users", (req: Request, res: Response) => {
-      console.log("users");
-      res.status(200).send("success");
-    });
-
-    return router;
   }
 
   private v2Routes() {
