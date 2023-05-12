@@ -2,7 +2,9 @@ import express, { Express, Request, Response, Router } from "express";
 import morgan from "morgan";
 import { formatMethod, formatStatus } from "./lib/util/log-format";
 import { colors } from "./lib/util/colors";
-import { v1Routes } from "./lib/routes/v1Routes";
+import { v1Routes } from "./lib/routes/v1-routes";
+import { NotFoundError } from "./lib/errors/not-found-error";
+import { errorHandler } from "./lib/middleware/error-handler";
 
 export class App {
   private app: Express;
@@ -17,6 +19,7 @@ export class App {
 
     //Must be last
     this.setupNotFoundHandler();
+    this.setUpErrorHandler();
   }
 
   public getExpressApp(): Express {
@@ -64,9 +67,13 @@ export class App {
   }
 
   public setupNotFoundHandler() {
-    this.app.all("*", (req: Request, res: Response) => {
-      res.status(404).send("404 Page not found");
+    this.app.all("*", () => {
+      throw new NotFoundError();
     });
+  }
+
+  public setUpErrorHandler() {
+    this.app.use(errorHandler);
   }
 
   public start(port: string) {

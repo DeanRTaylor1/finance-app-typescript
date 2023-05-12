@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { UsersController } from "../controllers/UsersController";
+import { UsersController } from "../controllers/users-controller";
 
 export class v1Routes {
   private router: Router;
